@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Klusly | Kluscalculator</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+  color: #18212b;
+}
+
+header {
+  background: #111827;
+  color: white;
+  padding: 25px 20px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 34px;
+  font-weight: 800;
+}
+
+.logo span {
+  color: #f59e0b;
+}
+
+header p {
+  margin: 6px 0 0;
+  color: #d1d5db;
+}
+
+.container {
+  max-width: 650px;
+  margin: 25px auto;
+  padding: 0 16px 40px;
+}
+
+.card {
+  background: white;
+  padding: 24px;
+  border-radius: 16px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+h2 {
+  margin-top: 0;
+}
+
+label {
+  display: block;
+  margin-top: 17px;
+  margin-bottom: 6px;
+  font-weight: bold;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 13px;
+  border: 1px solid #d1d5db;
+  border-radius: 9px;
+  font-size: 16px;
+}
+
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+button {
+  width: 100%;
+  margin-top: 24px;
+  padding: 15px;
+  border: none;
+  border-radius: 10px;
+  background: #f59e0b;
+  color: #111827;
+  font-size: 17px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.resultaat {
+  display: none;
+  margin-top: 25px;
+  background: #111827;
+  color: white;
+  padding: 22px;
+  border-radius: 14px;
+}
+
+.rij {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 0;
+}
+
+.totaal {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 1px solid #4b5563;
+  font-size: 23px;
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.kleineTekst {
+  font-size: 13px;
+  color: #9ca3af;
+  text-align: center;
+  margin-top: 20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">Klus<span>ly</span></div>
+  <p>Van klus naar prijs in 60 seconden.</p>
+</header>
+
+<div class="container">
+
+  <div class="card">
+
+    <h2>Bereken je klus</h2>
+
+    <label>Klantnaam</label>
+    <input type="text" id="klant" placeholder="Bijv. Jan de Vries">
+
+    <label>Soort klus</label>
+    <select id="klus">
+      <option>Timmerwerk</option>
+      <option>Schilderwerk</option>
+      <option>Stucwerk</option>
+      <option>Tegelwerk</option>
+      <option>Loodgieterswerk</option>
+      <option>Elektrawerk</option>
+      <option>Hovenierswerk</option>
+      <option>Dakwerk</option>
+      <option>Vloerwerk</option>
+      <option>Overig</option>
+    </select>
+
+    <label>Omschrijving</label>
+    <textarea id="omschrijving"
+      placeholder="Bijv. woonkamer schilderen"></textarea>
+
+    <label>Materiaalkosten (€)</label>
+    <input type="number" id="materiaal" min="0" step="0.01" placeholder="250">
+
+    <label>Aantal werkuren</label>
+    <input type="number" id="uren" min="0" step="0.5" placeholder="16">
+
+    <label>Uurloon (€)</label>
+    <input type="number" id="uurloon" min="0" step="0.01" placeholder="45">
+
+    <label>Overige kosten (€)</label>
+    <input type="number" id="overig" min="0" step="0.01" placeholder="50">
+
+    <label>BTW</label>
+    <select id="btw">
+      <option value="21">21%</option>
+      <option value="9">9%</option>
+      <option value="0">0%</option>
+    </select>
+
+    <button onclick="bereken()">Bereken klusprijs →</button>
+
+    <div class="resultaat" id="resultaat">
+
+      <h2>Prijsberekening</h2>
+
+      <div class="rij">
+        <span>Materiaal</span>
+        <span id="materiaalResultaat"></span>
+      </div>
+
+      <div class="rij">
+        <span>Arbeid</span>
+        <span id="arbeidResultaat"></span>
+      </div>
+
+      <div class="rij">
+        <span>Overige kosten</span>
+        <span id="overigResultaat"></span>
+      </div>
+
+      <div class="rij">
+        <span>Subtotaal</span>
+        <span id="subtotaalResultaat"></span>
+      </div>
+
+      <div class="rij">
+        <span>BTW</span>
+        <span id="btwResultaat"></span>
+      </div>
+
+      <div class="rij totaal">
+        <span>TOTAAL</span>
+        <span id="totaalResultaat"></span>
+      </div>
+
+    </div>
+
+  </div>
+
+  <div class="kleineTekst">
+    Klusly • Slim calculeren voor vakmensen
+  </div>
+
+</div>
+
+<script>
+function euro(bedrag) {
+  return bedrag.toLocaleString("nl-NL", {
+    style: "currency",
+    currency: "EUR"
+  });
+}
+
+function getNummer(id) {
+  return parseFloat(document.getElementById(id).value) || 0;
+}
+
+function bereken() {
+
+  const materiaal = getNummer("materiaal");
+  const uren = getNummer("uren");
+  const uurloon = getNummer("uurloon");
+  const overig = getNummer("overig");
+
+  const btwPercentage =
+    parseFloat(document.getElementById("btw").value);
+
+  const arbeid = uren * uurloon;
+
+  const subtotaal =
+    materiaal + arbeid + overig;
+
+  const btw =
+    subtotaal * (btwPercentage / 100);
+
+  const totaal =
+    subtotaal + btw;
+
+  document.getElementById("materiaalResultaat").textContent =
+    euro(materiaal);
+
+  document.getElementById("arbeidResultaat").textContent =
+    euro(arbeid);
+
+  document.getElementById("overigResultaat").textContent =
+    euro(overig);
+
+  document.getElementById("subtotaalResultaat").textContent =
+    euro(subtotaal);
+
+  document.getElementById("btwResultaat").textContent =
+    euro(btw) + " (" + btwPercentage + "%)";
+
+  document.getElementById("totaalResultaat").textContent =
+    euro(totaal);
+
+  document.getElementById("resultaat").style.display =
+    "block";
+}
+</script>
+
+</body>
+</html>
