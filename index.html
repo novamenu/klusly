@@ -327,6 +327,9 @@ const bedrijfsnaam = document.getElementById("bedrijfsnaam")?.value || "";
 const bedrijfsadres = document.getElementById("bedrijfsadres")?.value || "";
 const bedrijfstelefoon = document.getElementById("bedrijfstelefoon")?.value || "";
 const bedrijfsemail = document.getElementById("bedrijfsemail")?.value || "";
+  
+const logoBestand = document.getElementById("bedrijfslogo")?.files[0];
+const logoURL = logoBestand ? URL.createObjectURL(logoBestand) : "";
   if (!resultaat || getComputedStyle(resultaat).display === "none") {
     alert("Bereken eerst de klusprijs.");
     return;
