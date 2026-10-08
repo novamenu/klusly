@@ -279,7 +279,7 @@ function bereken() {
 }
 </script>
 
-<button type="button" id="offerteKnop" onclick="window.print()" style="display:none; margin:20px auto; padding:15px 25px; background:#f0a532; border:0; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">
+<button type="button" id="offerteKnop" onclick="maakOfferte()" style="display:none; margin:20px auto; padding:15px 25px; background:#f0a532; border:0; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">
   Offerte opslaan als PDF
 </button>
 
@@ -298,6 +298,126 @@ if (offerteResultaat) {
     attributes: true,
     attributeFilter: ["style"]
   });
+}
+</script>
+
+<script>
+function maakOfferte() {
+  const klant = document.querySelector('input[placeholder*="Jan"]')?.value || "Klant";
+  const omschrijving = document.querySelector('textarea')?.value || "";
+  const resultaat = document.getElementById("resultaat");
+
+  if (!resultaat || getComputedStyle(resultaat).display === "none") {
+    alert("Bereken eerst de klusprijs.");
+    return;
+  }
+
+  const geldigeTekst = (tekst) => String(tekst).replace(/[&<>"']/g, teken => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[teken]);
+
+  const venster = window.open("", "_blank");
+  if (!venster) {
+    alert("Sta pop-ups toe om de offerte te openen.");
+    return;
+  }
+
+  venster.document.write(`
+    <!DOCTYPE html>
+    <html lang="nl">
+    <head>
+      <meta charset="UTF-8">
+      <title>Klusly Offerte</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 35px; color: #18212b; }
+        h1 { color: #111827; }
+        .kop { border-bottom: 3px solid #efa537; padding-bottom: 15px; }
+        .prijs { margin-top: 25px; }
+        .prijs div { display: flex; justify-content: space-between; padding: 9px 0; }
+        .totaal { font-size: 22px; font-weight: bold; border-top: 2px solid #111827; }
+        .voet { margin-top: 45px; color: #666; font-size: 12px; }
+        @media print { body { padding: 10px; } }
+      </style>
+    </head>
+    <body>
+      <div class="kop">
+        <h1>Klusly</h1>
+        <h2>OFFERTE</h2>
+        <p>Datum: ${new Date().toLocaleDateString("nl-NL")}</p>
+      </div>
+      <p><strong>Klant:</strong> ${geldigeTekst(klant)}</p>
+      <p><strong>Werkzaamheden:</strong> ${geldigeTekst(omschrijving)}</p>
+      <div class="prijs">
+        ${resultaat.innerHTML}
+      </div>
+      <div class="voet">Deze offerte is opgesteld met Klusly.</div>
+    </body>
+    </html>
+  `);
+  venster.document.close();
+  venster.focus();
+  setTimeout(() => venster.print(), 400);
+}
+</script>
+
+<script>
+function maakOfferte() {
+  const klant = document.querySelector('input[placeholder*="Jan"]')?.value || "Klant";
+  const omschrijving = document.querySelector('textarea')?.value || "";
+  const resultaat = document.getElementById("resultaat");
+
+  if (!resultaat || getComputedStyle(resultaat).display === "none") {
+    alert("Bereken eerst de klusprijs.");
+    return;
+  }
+
+  const geldigeTekst = (tekst) => String(tekst).replace(/[&<>"']/g, teken => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;",
+    '"': "&quot;", "'": "&#39;"
+  })[teken]);
+
+  const venster = window.open("", "_blank");
+  if (!venster) {
+    alert("Sta pop-ups toe om de offerte te openen.");
+    return;
+  }
+
+  venster.document.write(`
+    <!DOCTYPE html>
+    <html lang="nl">
+    <head>
+      <meta charset="UTF-8">
+      <title>Klusly Offerte</title>
+      <style>
+        body { font-family: Arial, sans-serif; padding: 35px; color: #18212b; }
+        h1 { color: #111827; }
+        .kop { border-bottom: 3px solid #efa537; padding-bottom: 15px; }
+        .prijs { margin-top: 25px; }
+        .prijs div { display: flex; justify-content: space-between; padding: 9px 0; }
+        .totaal { font-size: 22px; font-weight: bold; border-top: 2px solid #111827; }
+        .voet { margin-top: 45px; color: #666; font-size: 12px; }
+        @media print { body { padding: 10px; } }
+      </style>
+    </head>
+    <body>
+      <div class="kop">
+        <h1>Klusly</h1>
+        <h2>OFFERTE</h2>
+        <p>Datum: ${new Date().toLocaleDateString("nl-NL")}</p>
+      </div>
+      <p><strong>Klant:</strong> ${geldigeTekst(klant)}</p>
+      <p><strong>Werkzaamheden:</strong> ${geldigeTekst(omschrijving)}</p>
+      <div class="prijs">
+        ${resultaat.innerHTML}
+      </div>
+      <div class="voet">Deze offerte is opgesteld met Klusly.</div>
+    </body>
+    </html>
+  `);
+  venster.document.close();
+  venster.focus();
+  setTimeout(() => venster.print(), 400);
 }
 </script>
 
