@@ -279,5 +279,27 @@ function bereken() {
 }
 </script>
 
+<button type="button" id="offerteKnop" onclick="window.print()" style="display:none; margin:20px auto; padding:15px 25px; background:#f0a532; border:0; border-radius:10px; font-weight:bold; font-size:16px; cursor:pointer;">
+  Offerte opslaan als PDF
+</button>
+
+<script>
+const offerteResultaat = document.getElementById("resultaat");
+const offerteKnop = document.getElementById("offerteKnop");
+
+if (offerteResultaat) {
+  const observer = new MutationObserver(() => {
+    offerteKnop.style.display =
+      getComputedStyle(offerteResultaat).display === "none"
+        ? "none" : "block";
+  });
+
+  observer.observe(offerteResultaat, {
+    attributes: true,
+    attributeFilter: ["style"]
+  });
+}
+</script>
+
 </body>
 </html>
